@@ -15,7 +15,7 @@ if (isset($_POST["loggin_btn"])) {
 		header("location: index.php"); //redirect to home page
 	}
 	else {
-		echo "Uporabniško ime ali gesto nista pravilna";
+		echo  "Uporabniško ime ali gesto nista pravilna";
 	}
 }
 
@@ -26,23 +26,13 @@ if (isset($_POST["loggin_btn"])) {
 <html>
 <head>
 	<title>login form</title>
+	<link rel="stylesheet" type="text/css" href="header.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
 <form action="login.php" method="post">
-<h2 class="prijava"> Pozdravljeni </h2>
-Za nadaljevanje vpišite vaše uporabniško ime in geslo <br> <br>
-
-	<table>
-		<tr>
-			<td colspan="2"><input type="text" name="username" placeholder="Uporabniško ime"></td>
-		</tr>
-		<tr>
-			<td colspan="2"><input type="password" name="password" placeholder="Geslo"></td>
-		</tr>
-		<tr>
-			<td><input type="submit" name="loggin_btn" value="Prijava"></td>
-			<td><input type="button" name="register" value="Registracija" onclick="window.location.href='register.php'"></td>
-		</tr>
-	</table>
+<p>Za nadaljevanje vpišite vaše <br>uporabniško ime in geslo:<br> </p>
+	<input type="text" name="username" placeholder="Uporabniško ime" required=""><br>
+	<input type="password" name="password" placeholder="Geslo" required=""><br>
 </body>
 </html>
