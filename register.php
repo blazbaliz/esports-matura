@@ -1,4 +1,5 @@
 <?php 
+
 $connect = mysqli_connect("localhost", "root", "", "e-sports") or die ("Povezave z zbirko ni mogoče vzpostaviti");
 	if (isset($_POST["register_btn"])) {
 		session_start();
@@ -9,21 +10,25 @@ $connect = mysqli_connect("localhost", "root", "", "e-sports") or die ("Povezave
 		$password = mysqli_real_escape_string($connect, $_POST["password"]);
 		$password2 = mysqli_real_escape_string($connect, $_POST["password2"]);
 		$starost = mysqli_real_escape_string($connect, $_POST["starost"]); 
-
-		//if (strlen($password)>=8) { } else {echo "* Geslo mora vsebovati vsaj 8 znakov ";} 
-		
-		if ($password == $password2) {
-			//naredi uporabnika
-			$password = md5($password); //hash password
-			$sql = "INSERT INTO uporabnik(username, ime , priimek, mail, password, starost) VALUES ('$username','$ime','$priimek', '$email', '$password', '$starost')";
-			mysqli_query($connect, $sql) or die ("Nemorem narediti uporabnika");
-			$_SESSION['sporocilo'] = 'Sedaj ste prijavljeni';
-			$_SESSION['uporabnik'] = $username;
-			header("location: index.php"); //preusmeri na domačo stran
-			}
-		else {
-			echo "* Ponovljeno geslo se ne ujema";} 
-		}
+ 		$sql_preveriuporabnika = "SELECT * FROM uporabnik WHERE username = '$username'";
+ 		$rezultat_preveriuporabnika = mysqli_query($connect, $sql_preveriuporabnika);
+ 		$sql_preverimail = "SELECT * FROM uporabnik WHERE mail = '$email' ";
+ 		$rezultat_preverimail = mysqli_query($connect, $sql_preverimail);
+ 		if (mysqli_num_rows($rezultat_preverimail) == 0 ) {
+			if(mysqli_num_rows($rezultat_preveriuporabnika) == 0){
+				if ($password == $password2) {
+					//naredi uporabnika
+					$password = md5($password); //hash password
+					$sql = "INSERT INTO uporabnik(username, ime , priimek, mail, password, starost) VALUES ('$username','$ime','$priimek', '$email', '$password', '$starost')";
+					mysqli_query($connect, $sql) or die ("Nemorem narediti uporabnika");
+					$_SESSION['sporocilo'] = 'Sedaj ste prijavljeni';
+					$_SESSION['uporabnik'] = $username;
+					header("location: index.php"); //preusmeri na domačo stran
+					}
+				else {echo "* Ponovljeno geslo se ne ujema";} }
+			else {echo "Uporabniško ime že obstaja";} }
+		else {echo "Email že obstaja";}		
+	}
 ?>
 
 <!DOCTYPE html>
@@ -34,36 +39,14 @@ $connect = mysqli_connect("localhost", "root", "", "e-sports") or die ("Povezave
 <body>
 
 <form action="register.php" method="post" >
-<h2 class="registracija"> Registracija </h2>
-Prosimo vnesite naslednje podatke <br><br>
-	<table>
-		
-		<tr>
-			<td> <input type="text" name="username" pattern=".{6,}" required title = "Uporabniško ime mora biti sestavljeno iz najmanj 6 znakov" placeholder="Uporabniško ime"> </td>
-		</tr>
-		<tr>
-			<td> <input type="text" name="ime" pattern=".{1,}" required placeholder="Ime"> </td>
-		</tr>
-		<tr>	
-			<td> <input type="text" name="priimek" pattern=".{1,}" required placeholder="Priimek"> </td>
-		</tr>
-		<tr>
-			<td> <input type="text" name="email" pattern=".{1,}" required  placeholder="Vaša e-pošta"> </td>
-		</tr>
-		<tr>
-			<td> <input type="password" name="password" pattern=".{8,}" required title="Geslo mora vsebovati vsaj 8 znakov" placeholder="Geslo">
-			 </td>
-		</tr>
-		<tr>
-			<td> <input type="password" name="password2" pattern=".{8,}" required title="Geslo mora vsebovati vsaj 8 znakov" placeholder="Ponovno vnesite Geslo"> 
-			</td>
-		</tr>
-		<tr>
-			<td><input type="number" name="starost" pattern=".{1,}" required  placeholder="Starost"></td>
-		</tr>
-		<tr>
-			<td><input type="Submit" name="register_btn" value="Registriraj se"></td>
-		</tr>
-	</table>
+Za registracijo na spletnem portalu vnesite naslednje podatke:<br><br>
+<input type="text" name="username" pattern=".{6,}" required title = "Uporabniško ime mora biti sestavljeno iz najmanj 6 znakov" placeholder="Uporabniško ime"> 
+<input type="text" name="ime" pattern=".{1,}" required placeholder="Ime">
+<input type="text" name="priimek" pattern=".{1,}" required placeholder="Priimek">
+<input type="text" name="email" pattern=".{1,}" required  placeholder="Vaša e-pošta">
+<input type="password" name="password" pattern=".{8,}" required title="Geslo mora vsebovati vsaj 8 znakov" placeholder="Geslo">
+<input type="password" name="password2" pattern=".{8,}" required title="Geslo mora vsebovati vsaj 8 znakov" placeholder="Ponovno vnesite Geslo">
+<input type="number" name="starost" pattern=".{1,}" required  placeholder="Starost"><br>
+
 </body>
 </html>
