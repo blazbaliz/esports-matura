@@ -2,17 +2,18 @@
 session_start();
 $connect = mysqli_connect("localhost", "root", "", "e-sports") or die ("nemorem povezati z db");
 $username = $_SESSION['uporabnik'];
-$sql_tekme = "SELECT * FROM tekme";
+$sql_tekme = "SELECT * FROM tekme1 WHERE tekma_status = 'ni izzivalca' ";
 $result_tekme = mysqli_query($connect, $sql_tekme) or die("can not select tekme");
+
 #ustvari igro
 if (isset($_POST['create_game'])) {
-	session_start();
 	$session_id = session_id();
 	$uniqid = uniqid();
+	$_SESSION['session_id'] = $uniqid;
 	$_SESSION['uniqid'] = $uniqid;
 	$igra = mysqli_real_escape_string($connect, $_POST['game']) or die ("a");
 	$vrednost_stave = mysqli_real_escape_string($connect, $_POST['vrednost_stave']) or die ("b");
-	$sql_create_game = "INSERT INTO tekme(gostitelj, vrednost_stave, igra,session_id) VALUES ('$username','$vrednost_stave','$igra','$uniqid') " ;
+	$sql_create_game = "INSERT INTO tekme1 (gostitelj, izzivalec, vrednost_stave, igra,session_id, gostitelj_status, izzivalec_status, tekma_status, rezultat_gostitelj) VALUES ('$username', 'Ni izzivalca' ,'$vrednost_stave','$igra','$uniqid','nepripravljen','nepripravljen', 'ni izzivalca', '/') " ;
 	mysqli_query($connect, $sql_create_game) or die ("cannot create game");
 	$_SESSION['gostitelj'] = $row['gostitelj'];
 	ini_set("session.use_cookies",0);
@@ -22,12 +23,15 @@ if (isset($_POST['create_game'])) {
 if (isset($_POST['join'])) {
 	while ($row = mysqli_fetch_assoc($result_tekme)) {
 		$st_tekme = $row['st'];	
+		$session_id = $row['session_id'];
+		$_SESSION['session_id'] = $session_id;
 		break;
 	}
-	$sql_pridruzi_se = "SELECT * FROM tekme WHERE st = '$st_tekme'";
+	$sql_pridruzi_se = "SELECT * FROM tekme1 WHERE st = '$st_tekme'";
 	$pridruzi_se= mysqli_query($connect,$sql_pridruzi_se) or die ('nemorem izbrati tekme;');
 	while ($row = mysqli_fetch_assoc($pridruzi_se)){
-	$_SESSION['uniqid'] = $row['session_id'];
+	$sql_izivalec = "UPDATE tekme1 SET izzivalec = '$username', tekma_status = 'not_started' WHERE st = '$st_tekme' ";
+	mysqli_query($connect, $sql_izivalec) or die ('cannot create izzivalec');
 	header("location: igralnica.php?session_id=".$row['session_id'] ); 
 }
 }
