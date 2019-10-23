@@ -1,0 +1,14 @@
+.profil {
+	width: 100%;
+	height: 100%;
+}
+
+.sidebar {
+	float:left;
+}
+
+.osnovne_informacije {
+	display: table;
+	position: absolute;
+	left: 40%
+}
