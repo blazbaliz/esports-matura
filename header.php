@@ -30,12 +30,20 @@
 			<div class="logo">
 			<h1>e<span>Sports</span></h1>
 			</div>
-			<ul class="navigacija">
-				<a><li>Lobby</li></a>
-				<a><li>Profil</li></a>
+
+			<?php if (isset($_SESSION['uporabnik'])) {
+				echo '<ul class="navigacija">
+				<a href="lobby.php"><li>Igralnica</li></a>
+				<a href="profil.php"><li>Profil</li></a>
 				<a><li>FAQ</li></a>
 			</ul>
 		</div>		
+';
+			}
+				elseif (!isset($_SESSION['uporabnik'])) {
+					echo "";
+				}
+		?>
 	</div>
 	<div id="modal_prijava" class="modal_prijava">
 					<div class="modal_content_prijava">
